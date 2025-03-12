@@ -42,7 +42,6 @@ export default  function PaymentButton({ text, className, amount }) {
     useEffect(() => {
         if (document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
             setRazorpayLoaded(true);
-            toast.error("razorpay scripts already Loaded")
             return;
         }
     
@@ -123,7 +122,7 @@ export default  function PaymentButton({ text, className, amount }) {
         <button
             className={className}
             onClick={handlePayment}
-            disabled={loading || !razorpayLoaded || isPremium} 
+            disabled={loading || !razorpayLoaded || isPremium ||!user} 
         >
             {isPremium ? "You are Premium" : loading ? (
                 <span className="flex justify-center items-center">
