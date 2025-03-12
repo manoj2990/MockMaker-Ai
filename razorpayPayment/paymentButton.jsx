@@ -40,18 +40,23 @@ export default  function PaymentButton({ text, className, amount }) {
     
 
     useEffect(() => {
+        if (document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
+            setRazorpayLoaded(true);
+            toast.error("razorpay scripts already Loaded")
+            return;
+        }
+    
         const script = document.createElement("script");
         script.src = "https://checkout.razorpay.com/v1/checkout.js";
         script.async = true;
         script.onload = () => setRazorpayLoaded(true);
         script.onerror = () => {
-            toast.error("Failed to load Razorpay script")
-            console.error("Failed to load Razorpay script")
+            toast.error("Failed to load Razorpay script");
+            console.error("Failed to load Razorpay script");
         };
         document.body.appendChild(script);
     }, []);
-
-
+    
     
        
 
