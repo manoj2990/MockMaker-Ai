@@ -1,11 +1,11 @@
 "use server";
-import { chatSession } from "../utils/GeminiAI";
+import { generateFromGemini } from "../utils/GeminiAI";
 import { db } from "../utils/neondbConfig";
 import { MockInterview } from "../utils/schema";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import { currentUser } from "@clerk/nextjs/server";
-import { desc,eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { cache } from "react";
 
@@ -27,9 +27,11 @@ export async function GenerateInterviewQuestions(
     `;
 
   try {
-    const result = await chatSession.sendMessage(prompt); //give details to gemini for qustion & answer generation
-    const AI_Generated_Questions = result.response
-      .text()
+    // const result = await chatSession.sendMessage(prompt); //give details to gemini for qustion & answer generation
+    const result = await generateFromGemini(prompt);
+
+    const AI_Generated_Questions = result
+      // .text()
       .replace("```json", "")
       .replace("```", "");
 
@@ -53,33 +55,25 @@ export async function GenerateInterviewQuestions(
   }
 }
 
-
 export async function getInterviewDetails(interviewID) {
-
-  if(!interviewID) {
+  if (!interviewID) {
     throw new Error("Invalid interview ID");
+  }
+
+  try {
+    const response = await db
+      .select()
+      .from(MockInterview)
+      .where(eq(MockInterview.mockId, interviewID));
+
+    return response[0] || null;
+  } catch (error) {
+    console.error("Error in geting Interview Details:", error);
+    throw error;
+  }
 }
- 
-
-try {
-  
-  const response = await db
-  .select()
-  .from(MockInterview)
-  .where(eq(MockInterview.mockId,interviewID));
-
-  return response[0] || null
-
-} catch (error) {
-  console.error("Error in geting Interview Details:", error);
-  throw error;
-}
-  
-}
-
 
 export const getInterviewQuestionAndAnswer = async (id) => {
-  
   try {
     if (!id) {
       throw new Error("Invalid Interview ID");
@@ -94,7 +88,13 @@ export const getInterviewQuestionAndAnswer = async (id) => {
       throw new Error("No interview data found.");
     }
 
-    const jsonMockResp = result[0]?.jsonMockResp ? JSON.parse(result[0].jsonMockResp) : [];
+    const jsonMockResp = result[0]?.jsonMockResp
+      ? JSON?.parse(result[0].jsonMockResp)
+      : [];
+
+    //  const jsonMockResp = result[0]?.jsonMockResp
+    //   ? result[0].jsonMockResp
+    //   : [];
 
     return {
       InterviewData: result[0],
@@ -105,7 +105,6 @@ export const getInterviewQuestionAndAnswer = async (id) => {
     return { InterviewData: null, mockInterviewQuestion: [] };
   }
 };
-
 
 const fetchInterviewsFromDB = async (email) => {
   if (!email) return [];
@@ -120,21 +119,13 @@ const fetchInterviewsFromDB = async (email) => {
     console.error("Error fetching interviews:", error);
     return [];
   }
+};
 
-}
+export const fetchInterviews = cache(async (email) => {
+  if (!email) return [];
 
-
-export const fetchInterviews = cache( async(email)=>{
-
-   if(!email) return [];
-
-        return  await fetchInterviewsFromDB(email);
-
-
+  return await fetchInterviewsFromDB(email);
 });
-
-
-
 
 export const deleteInterview = async (interviewId) => {
   try {
@@ -144,11 +135,7 @@ export const deleteInterview = async (interviewId) => {
     }
 
     // Delete the interview from the database
-    await db
-      .delete(MockInterview)
-      .where(eq(MockInterview.mockId, interviewId));
-
-      
+    await db.delete(MockInterview).where(eq(MockInterview.mockId, interviewId));
 
     return { success: true, message: "Interview deleted successfully" };
   } catch (error) {

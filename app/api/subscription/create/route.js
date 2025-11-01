@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { db } from "../../../../utils/neondbConfig"; // Import Drizzle DB connection
-import { subscriptions } from "../../../../utils/schema"; // Subscription schema
+import { db } from "../../../../utils/neondbConfig"; 
+import { subscriptions } from "../../../../utils/schema"; 
 import { eq } from "drizzle-orm";
 
 export async function POST(req) {

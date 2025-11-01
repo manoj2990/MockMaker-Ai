@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "../utils/neondbConfig";
-import { chatSession } from "../utils/GeminiAI";
+import { generateFromGemini } from "../utils/GeminiAI";
 import { UserAnswer } from "../utils/schema";
 import { currentUser } from "@clerk/nextjs/server";
 import moment from "moment";
@@ -24,8 +24,9 @@ export async function SaveUserAnswerWithFeedback(mockId, question, correctAns, u
       in JSON format with fields "rating" and "feedback". Keep it concise.
     `;
 
-    const result = await chatSession.sendMessage(feedbackPrompt);
-    const jsonMockResp = await result.response.text();
+    // const result = await chatSession.sendMessage(feedbackPrompt);
+    const result = await generateFromGemini(feedbackPrompt);
+    const jsonMockResp = result;
     const cleanedResp = jsonMockResp.replace("```json", "").replace("```", "");
     const feedbackResponse = JSON.parse(cleanedResp);
 

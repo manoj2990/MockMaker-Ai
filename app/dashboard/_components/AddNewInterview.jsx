@@ -89,7 +89,7 @@ function AddNewInterview() {
             <DialogDescription >
               
               <span className="text-left mt-2 text-sm text-gray-400">
-                Let us know more about the job position, responsibilities, and
+              Let us know more about the job position, responsibilities, and
                 your professional experience.
               </span>
 

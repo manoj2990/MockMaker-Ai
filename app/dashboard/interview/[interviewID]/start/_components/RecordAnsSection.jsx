@@ -52,7 +52,7 @@ function RecordAnsSection({
       setTimeout(async () => {
         // Get the latest transcript instead of relying on state
         const finalAnswer = latestAnswerRef.current.trim();
-        console.log("final ans >>>", finalAnswer);
+        
        
   
         if (finalAnswer.length < 10) {

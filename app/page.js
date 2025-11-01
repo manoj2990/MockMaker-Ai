@@ -17,6 +17,7 @@ export default  function Home() {
   const howItWorks = useRef(null);
 
   const scrollToSection = ()=>{
+    
     howItWorks.current?.scrollIntoView({ behavior: "smooth" });
   }
  

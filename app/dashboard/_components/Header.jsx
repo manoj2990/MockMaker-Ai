@@ -11,11 +11,12 @@ function Header({onHowItWorksClick}) {
   
   //usePathname is used to get url
   const path = usePathname();
+
   //isSingedIn from clerk
   const { isSignedIn } = useUser();
   const [isScrolled, setIsScrolled] = useState(false);
   
-console.log("isSignedIn ==>",isSignedIn)
+
   // Add scroll event listener
   useEffect(() => {
     const handleScroll = () => {
@@ -46,12 +47,12 @@ console.log("isSignedIn ==>",isSignedIn)
         {/* Logo */}
         <Link href={'/'}>
         <Image
-  src="/logo.svg"
-  layout="intrinsic"
-  width={70}
-  height={50}
-  alt="Logo"
-/>
+        src="/logo.svg"
+        layout="intrinsic"
+        width={70}
+        height={50}
+        alt="Logo"
+      />
 
         </Link>
 

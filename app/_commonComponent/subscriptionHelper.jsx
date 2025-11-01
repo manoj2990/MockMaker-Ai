@@ -16,7 +16,7 @@ const CreateSubscription = () => {
         const localSubStatus = localStorage.getItem("subscriptionExists");
 
         if (localSubStatus === "true") {
-            console.log("Subscription found in localStorage. Skipping API call.");
+           
             setSubscriptionChecked(true);
             return;
         }

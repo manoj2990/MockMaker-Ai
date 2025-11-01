@@ -118,6 +118,8 @@ export default  function PaymentButton({ text, className, amount }) {
         }
     };
 
+    
+
     return (
         <button
             className={className}
